@@ -3,23 +3,24 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ProductModule } from './product/product.module'
+import { ConfigModule } from '@nestjs/config'
 import { Product } from './product/entities/product.entity'
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
+  imports: [ConfigModule.forRoot(),
+  TypeOrmModule.forRoot(
+    {
+      url: process.env.DATABASE_URL,
       type: 'postgres',
-      host: process.env.HOST,
-      port: 5432,
-      username: process.env.USER_NAME,
-      password: process.env.PASSWORD,
-      database: process.env.DATABASE,
+      port: 3306,
       entities: [Product],
       synchronize: true,
-    }),
+    }
+  ),
     ProductModule
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports:[ConfigModule]
 })
 export class AppModule { }
